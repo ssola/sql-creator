@@ -1,0 +1,11 @@
+CREATE EXTERNAL TABLE {{ database }}.{{ table}} (
+    {% for field in fields -%}
+    {% if not loop.last -%}
+    {{ field }} {{ fields[field] }},
+    {% else -%}
+    {{ field }} {{ fields[field] }}
+    {% endif -%}
+    {% endfor -%}
+) {% if partition_by -%} PARTITIONED BY ({% for field in partition_by -%}{% if not loop.last -%}{{ field }} {{ partition_by[field] }},{% else -%}{{ field }} {{ partition_by[field] }}{% endif -%}{% endfor -%}){% endif %}
+STORED AS PARQUET
+LOCATION '{{ base_path }}/{{ database }}/{{ table }}';
